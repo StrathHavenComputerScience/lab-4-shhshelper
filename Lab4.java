@@ -22,7 +22,26 @@ public class Lab4
   
   public static void completeBars()
   {
-    //insert instructions below
+    int moveTo;
+    boolean keepRunning=true;
+    while(keepRunning){
+        moveTo=checkDark();
+        for(int a=moveTo;a>0;a--){
+            Robot.makeDark();
+            Robot.move();
+        }
+        turnAround();
+        for(int a=moveTo;a>0;a--){
+            Robot.move();
+        }
+        Robot.turnLeft();
+        if(Robot.frontIsClear()){
+            Robot.move();
+        }
+        else{
+            keepRunning=false;
+        }
+    }
 
     
     
@@ -44,10 +63,28 @@ public class Lab4
   
   public static void combinePiles()
   {
-    //insert instructions below
-
-    
-    
+    int addNum=countLeft();
+    turnRight();
+    Robot.move();
+    Robot.turnLeft();
+    if(Robot.onDark()){
+        while(Robot.onDark()){
+        Robot.move();
+    }
+}
+    for(int b=addNum;b>0;b--){
+        Robot.makeDark();
+        if(Robot.frontIsClear()){
+            Robot.move();
+        }
+    }
+    turnAround();
+    while(Robot.frontIsClear()){
+        Robot.move();
+    }
+    turnRight();
+    Robot.move();
+    turnRight();
   }
 
   public static void testCombinePiles1()
@@ -66,16 +103,14 @@ public class Lab4
   
   public static void connectDots()
   {
-    //insert instructions below
-
-    
-    
-  }
+      findDot();
+}
   
   public static void testConnectDots1()
   {
     Robot.load("connect1.txt");
     Robot.setDelay(0.025);
+    //Robot.setDelay(1);
     connectDots();
   }
   
@@ -85,4 +120,112 @@ public class Lab4
     Robot.setDelay(0.025);
     connectDots();
   }
+  public static int checkDark(){
+      Robot.turnLeft();
+      int darkSquare=0;
+      while(!Robot.onDark()){
+      if(Robot.frontIsClear()){
+      Robot.move();
+    }
+    darkSquare++;
+    }
+    turnAround();
+    while(Robot.frontIsClear()){
+        Robot.move();
+    }
+    turnAround();
+    return darkSquare;
+}
+public static int countLeft(){
+    int numLeft=0;
+    boolean leftCleared=false;
+    while(Robot.onDark()){
+        numLeft++;
+        if(Robot.frontIsClear()){
+            Robot.move();
+        }
+        else{
+            clearLeft(numLeft);
+            leftCleared=true;
+        }
+    }
+    if(!Robot.onDark()&&!leftCleared){
+        clearLeft(numLeft);
+    }
+    return numLeft;
+}
+public static void clearLeft(int leftCount){
+    if(!Robot.onDark()|!Robot.frontIsClear()){
+        turnAround();
+        for(int i=leftCount;i>0;i--){
+            if(Robot.onDark()){
+                Robot.makeLight();
+            }
+            if(Robot.frontIsClear()){
+                Robot.move();
+            }
+        }
+        turnAround();
+        if(Robot.onDark()){
+            Robot.makeLight();
+        }
+    }
+}
+public static void findDot(){
+    for(int i=0;i<3;i++){
+    dotTest(i);
+    if(Robot.onDark()){
+        i=0;
+    }
+    else{
+    failedDot(i);
+}
+}
+}
+public static void fillLastDot(){
+        if(Robot.onDark()){
+        backUp();
+        if(!Robot.onDark()){
+            Robot.makeDark();
+        }
+        Robot.move();
+    }
+}
+public static void dotTest(int b){
+    Robot.move();
+    Robot.move();
+    if(Robot.onDark()){
+    fillLastDot();
+    Robot.turnLeft();
+    if(b<3){
+        findDot();
+    }
+}
+}
+public static int failedDot(int turn){
+    int failTimes=0;
+    if(!Robot.onDark()){
+        backUp();
+        backUp();
+        if(turn==3){
+            Robot.turnLeft();
+            failTimes=4;
+        }
+        else if(turn==2){
+            turnAround();
+        }
+        else{
+            turnRight();
+        }
+    }
+    return failTimes;
+}
+public static boolean connectStop(int a){
+    if(a==4){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 }
