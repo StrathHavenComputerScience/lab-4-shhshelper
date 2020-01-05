@@ -1,3 +1,4 @@
+
 public class Lab4
 {
   public static void turnRight()
@@ -103,7 +104,11 @@ public class Lab4
   
   public static void connectDots()
   {
-      findDot();
+      while(darkDotCheck()){
+          Robot.move();
+          Robot.makeDark();
+          Robot.move();
+        }
 }
   
   public static void testConnectDots1()
@@ -171,61 +176,52 @@ public static void clearLeft(int leftCount){
         }
     }
 }
-public static void findDot(){
-    for(int i=0;i<3;i++){
-    dotTest(i);
+public static boolean darkDotCheck(){
+    Robot.move();
+    Robot.move();
     if(Robot.onDark()){
-        i=0;
-    }
-    else{
-    failedDot(i);
-}
-}
-}
-public static void fillLastDot(){
-        if(Robot.onDark()){
-        backUp();
-        if(!Robot.onDark()){
-            Robot.makeDark();
-        }
+        turnAround();
         Robot.move();
-    }
-}
-public static void dotTest(int b){
-    Robot.move();
-    Robot.move();
-    if(Robot.onDark()){
-    fillLastDot();
-    Robot.turnLeft();
-    if(b<3){
-        findDot();
-    }
-}
-}
-public static int failedDot(int turn){
-    int failTimes=0;
-    if(!Robot.onDark()){
-        backUp();
-        backUp();
-        if(turn==3){
-            Robot.turnLeft();
-            failTimes=4;
-        }
-        else if(turn==2){
-            turnAround();
-        }
-        else{
-            turnRight();
-        }
-    }
-    return failTimes;
-}
-public static boolean connectStop(int a){
-    if(a==4){
+        Robot.move();
+        turnAround();
         return true;
     }
     else{
-        return false;
+        turnAround();
+        Robot.move();
+        Robot.move();
+        turnAround();
+        Robot.turnLeft();
+        Robot.move();
+        Robot.move();
+        if(Robot.onDark()){
+            turnAround();
+            Robot.move();
+            Robot.move();
+            turnAround();
+            return true;
+        }
+        else{
+            turnAround();
+            Robot.move();
+            Robot.move();
+            Robot.move();
+            Robot.move();
+            if(Robot.onDark()){
+                turnAround();
+                Robot.move();
+                Robot.move();
+                turnAround();
+                return true;
+            }
+            else{
+                turnAround();
+                Robot.move();
+                Robot.move();
+                turnAround();
+                return false;
     }
+}
+}
 }
 }
